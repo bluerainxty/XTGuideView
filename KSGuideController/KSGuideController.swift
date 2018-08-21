@@ -8,20 +8,24 @@
 
 import UIKit
 
-@objc public class KSGuideController: UIViewController {
-    
-    enum Region {
-        case upperLeft
-        case upperRight
-        case lowerLeft
-        case lowerRight
-    }
+public enum Region {
+    case upper
+    case lower
+    case left
+    case right
+    case upperLeft
+    case upperRight
+    case lowerLeft
+    case lowerRight
+}
+
+public class KSGuideController: UIViewController {
     
     public typealias CompletionBlock = (() -> Void)
     public typealias IndexChangeBlock = ((_ index: Int, _ item: KSGuideItem) -> Void)
     
     private var items = [KSGuideItem]()
-    @objc public var currentIndex: Int = -1 {
+    public var currentIndex: Int = -1 {
         didSet {
             self.indexWillChangeBlock?(currentIndex, self.currentItem)
             configViews()
@@ -41,22 +45,22 @@ import UIKit
     private var indexDidChangeBlock: IndexChangeBlock?
     private var guideKey: String?
     
-    @objc public var maskCornerRadius: CGFloat = 5
-    @objc public var backgroundAlpha: CGFloat = 0.7
-    @objc public var spacing: CGFloat = 20
-    @objc public var padding: CGFloat = 50
-    @objc public var maskInsets = UIEdgeInsets(top: -8, left: -8, bottom: -8, right: -8)
-    @objc public var font = UIFont.systemFont(ofSize: 14)
-    @objc public var textColor = UIColor.white
-    @objc public var arrowColor = UIColor.white
+    public var maskCornerRadius: CGFloat = 5
+    public var backgroundAlpha: CGFloat = 0.7
+    public var spacing: CGFloat = 20
+    public var padding: CGFloat = 50
+    public var maskInsets = UIEdgeInsets(top: -8, left: -8, bottom: -8, right: -8)
+    public var font = UIFont.systemFont(ofSize: 14)
+    public var textColor = UIColor.white
+    public var arrowColor = UIColor.white
     // Global arrow image for all items
-    @objc public var arrowImage: UIImage?
-    @objc public var animationDuration = 0.3
-    @objc public var animatedMask = true
-    @objc public var animatedText = true
-    @objc public var animatedArrow = true
+    public var arrowImage: UIImage?
+    public var animationDuration = 0.3
+    public var animatedMask = true
+    public var animatedText = true
+    public var animatedArrow = true
     
-    @objc public var statusBarHidden = false
+    public var statusBarHidden = false
     
     private var maskCenter: CGPoint {
         get {
@@ -64,21 +68,7 @@ import UIKit
         }
     }
     
-    private var region: Region {
-        get {
-            let center = maskCenter
-            let bounds = view.bounds
-            if center.x <= bounds.midX && center.y <= bounds.midY {
-                return .upperLeft
-            } else if center.x > bounds.midX && center.y <= bounds.midY {
-                return .upperRight
-            } else if center.x <= bounds.midX && center.y > bounds.midY {
-                return .lowerLeft
-            } else {
-                return .lowerRight
-            }
-        }
-    }
+    private var region = Region.upperLeft
     
     private var hollowFrame: CGRect {
         get {
@@ -109,12 +99,12 @@ import UIKit
     
     
     // Give a nil key to ignore the cache logic.
-    @objc public convenience init(item: KSGuideItem, key: String?) {
+    public convenience init(item: KSGuideItem, key: String?) {
         self.init(items: [item], key: key)
     }
     
     // Give a nil key to ignore the cache logic.
-    @objc public init(items: [KSGuideItem], key: String?) {
+    public init(items: [KSGuideItem], key: String?) {
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .custom
         modalTransitionStyle = .crossDissolve
@@ -122,7 +112,7 @@ import UIKit
         self.guideKey = key
     }
     
-    @objc public func show(from vc: UIViewController, completion:CompletionBlock?) {
+    public func show(from vc: UIViewController, completion:CompletionBlock?) {
         self.completion = completion
         if let key = guideKey {
             if KSGuideDataManager.shouldShowGuide(with: key) {
@@ -133,36 +123,36 @@ import UIKit
         }
     }
     
-    @objc public func setIndexWillChangeBlock(_ block: IndexChangeBlock?) {
+    public func setIndexWillChangeBlock(_ block: IndexChangeBlock?) {
         indexWillChangeBlock = block
     }
     
-    @objc public func setIndexDidChangeBlock(_ block: IndexChangeBlock?) {
+    public func setIndexDidChangeBlock(_ block: IndexChangeBlock?) {
         indexDidChangeBlock = block;
     }
     
-    @objc required public init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    @objc override public func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         currentIndex = 0
     }
     
-    @objc public override var prefersStatusBarHidden: Bool {
+    public override var prefersStatusBarHidden: Bool {
         return statusBarHidden
     }
     
-    @objc public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { (ctx) in
             self.configMask()
             self.configViewFrames()
         }, completion: nil)
     }
     
-    @objc override public func didReceiveMemoryWarning() {
+    override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
@@ -177,6 +167,7 @@ import UIKit
         } else {
             arrowImageView.image = UIImage(named: "guide_arrow", in: Bundle(for: KSGuideController.self), compatibleWith: nil)
         }
+        self.region = currentItem.region
         arrowImageView.image = arrowImageView.image?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
         arrowImageView.tintColor = arrowColor
         view.addSubview(arrowImageView)
@@ -188,6 +179,7 @@ import UIKit
         textLabel.numberOfLines = 0
         view.addSubview(textLabel)
         
+        maskCornerRadius = currentItem.cornerRadius
         configMask()
         configViewFrames()
     }
@@ -238,10 +230,41 @@ import UIKit
                               y: arrowRect.maxY + spacing,
                               width: size.width,
                               height: size.height)
-            
-        case .upperRight:
+        case .upper:
+           
             arrowRect = CGRect(x: hollowFrame.midX - imageSize.width / 2,
                                y: hollowFrame.maxY + spacing,
+                               width: imageSize.width,
+                               height: imageSize.height)
+            let x: CGFloat = (view.frame.size.width - size.width)/2
+            textRect = CGRect(x: x,
+                              y: arrowRect.maxY + spacing,
+                              width: size.width,
+                              height: size.height)
+            
+        case .upperRight:
+            arrowRect = CGRect(x: hollowFrame.midX - imageSize.width - spacing,
+                               y: hollowFrame.maxY + spacing,
+                               width: imageSize.width,
+                               height: imageSize.height)
+            let x: CGFloat = max(padding, min(maxX, arrowRect.minX - size.width / 2))
+            textRect = CGRect(x: x,
+                              y: arrowRect.maxY + spacing,
+                              width: size.width,
+                              height: size.height)
+        case .left:
+            arrowRect = CGRect(x: hollowFrame.midX - imageSize.width / 2,
+                               y: hollowFrame.midY - imageSize.height / 2,
+                               width: imageSize.width,
+                               height: imageSize.height)
+            let x: CGFloat = max(padding, min(maxX, arrowRect.maxX - size.width / 2))
+            textRect = CGRect(x: x,
+                              y: arrowRect.maxY + spacing,
+                              width: size.width,
+                              height: size.height)
+        case .right:
+            arrowRect = CGRect(x: hollowFrame.minX - spacing - imageSize.width,
+                               y: hollowFrame.midY - imageSize.height / 2,
                                width: imageSize.width,
                                height: imageSize.height)
             let x: CGFloat = max(padding, min(maxX, arrowRect.minX - size.width / 2))
@@ -257,6 +280,16 @@ import UIKit
                                width: imageSize.width,
                                height: imageSize.height)
             let x: CGFloat = max(padding, min(maxX, arrowRect.maxX - size.width / 2))
+            textRect = CGRect(x: x,
+                              y: arrowRect.minY - spacing - size.height,
+                              width: size.width,
+                              height: size.height)
+        case .lower:
+            arrowRect = CGRect(x: hollowFrame.midX,
+                               y: hollowFrame.maxY + spacing,
+                               width: imageSize.width,
+                               height: imageSize.height)
+            let x: CGFloat = (view.frame.size.width - size.width)/2
             textRect = CGRect(x: x,
                               y: arrowRect.minY - spacing - size.height,
                               width: size.width,
@@ -303,7 +336,7 @@ import UIKit
         textLabel.frame = textRect
     }
     
-    @objc public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if currentIndex < items.count - 1 {
             currentIndex += 1
         } else {

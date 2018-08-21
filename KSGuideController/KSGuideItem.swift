@@ -8,22 +8,26 @@
 
 import UIKit
 
-@objc public class KSGuideItem: NSObject {
-    @objc public var sourceView: UIView?
-    @objc public var rect: CGRect = .zero
+public class KSGuideItem: NSObject {
+    public var sourceView: UIView?
+    public var rect: CGRect = .zero
+    public var cornerRadius: CGFloat = 5
     // arrow image for this item
-    @objc public var arrowImage: UIImage?
-    @objc public var text: String!
+    public var arrowImage: UIImage?
+    public var text: String!
+    public var region: Region!
     
-    @objc public init(sourceView: UIView, arrowImage: UIImage? = nil, text: String) {
+    public init(sourceView: UIView, region: Region, arrowImage: UIImage? = nil, text: String) {
         self.sourceView = sourceView
         self.arrowImage = arrowImage
         self.text = text
+        self.region = region
     }
     
-    @objc public init(rect: CGRect, arrowImage: UIImage? = nil, text: String) {
+    public init(rect: CGRect, region: Region, arrowImage: UIImage? = nil, text: String) {
         self.rect = rect
         self.arrowImage = arrowImage
         self.text = text
+        self.region = region
     }
 }
