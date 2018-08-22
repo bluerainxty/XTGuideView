@@ -220,7 +220,7 @@ public class KSGuideController: UIViewController {
         switch region {
             
         case .upperLeft:
-            transform = CGAffineTransform(scaleX: -1, y: 1)
+            //            transform = CGAffineTransform(scaleX: -1, y: 1)
             arrowRect = CGRect(x: hollowFrame.midX - imageSize.width / 2,
                                y: hollowFrame.maxY + spacing,
                                width: imageSize.width,
@@ -231,7 +231,7 @@ public class KSGuideController: UIViewController {
                               width: size.width,
                               height: size.height)
         case .upper:
-           
+            
             arrowRect = CGRect(x: hollowFrame.midX - imageSize.width / 2,
                                y: hollowFrame.maxY + spacing,
                                width: imageSize.width,
@@ -274,7 +274,7 @@ public class KSGuideController: UIViewController {
                               height: size.height)
             
         case .lowerLeft:
-            transform = CGAffineTransform(scaleX: -1, y: -1)
+            //            transform = CGAffineTransform(scaleX: -1, y: -1)
             arrowRect = CGRect(x: hollowFrame.midX - imageSize.width / 2,
                                y: hollowFrame.minY - spacing - imageSize.height,
                                width: imageSize.width,
@@ -285,8 +285,8 @@ public class KSGuideController: UIViewController {
                               width: size.width,
                               height: size.height)
         case .lower:
-            arrowRect = CGRect(x: hollowFrame.midX,
-                               y: hollowFrame.maxY + spacing,
+            arrowRect = CGRect(x: hollowFrame.midX - imageSize.width/2,
+                               y: hollowFrame.minY - spacing - imageSize.height,
                                width: imageSize.width,
                                height: imageSize.height)
             let x: CGFloat = (view.frame.size.width - size.width)/2
@@ -296,7 +296,7 @@ public class KSGuideController: UIViewController {
                               height: size.height)
             
         case .lowerRight:
-            transform = CGAffineTransform(scaleX: 1, y: -1)
+            //            transform = CGAffineTransform(scaleX: 1, y: -1)
             arrowRect = CGRect(x: hollowFrame.midX - imageSize.width / 2,
                                y: hollowFrame.minY - spacing - imageSize.height,
                                width: imageSize.width,
