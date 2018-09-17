@@ -212,7 +212,7 @@ public class KSGuideController: UIViewController {
         
         var textRect: CGRect!
         var arrowRect: CGRect!
-        var transform: CGAffineTransform = .identity
+        let transform: CGAffineTransform = .identity
         let imageSize = arrowImageView.image!.size
         let maxWidth = view.frame.size.width - padding * 2
         let size = currentItem.text.ks_size(of: font, maxWidth: maxWidth)
