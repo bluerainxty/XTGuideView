@@ -244,7 +244,7 @@ public class KSGuideController: UIViewController {
             
         case .upperRight:
             arrowRect = CGRect(x: hollowFrame.midX - imageSize.width - spacing,
-                               y: hollowFrame.maxY + spacing,
+                               y: hollowFrame.maxY,
                                width: imageSize.width,
                                height: imageSize.height)
             let x: CGFloat = max(padding, min(maxX, arrowRect.minX - size.width / 2))
