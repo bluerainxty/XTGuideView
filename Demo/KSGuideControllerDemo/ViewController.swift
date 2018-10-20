@@ -44,11 +44,12 @@ class ViewController: UIViewController {
             if n % 2 == 0 {
                 // Use custom arrow image for every item, you can also set global arrow image for all items by setting the arrowImage property for a KSGuideController instance.
 //                let item = KSGuideItem(sourceView: nil, arrowImage: #imageLiteral(resourceName: "arrow"), text: String(text))
-                let item = KSGuideItem(rect: CGRect.zero, arrowImage: #imageLiteral(resourceName: "arrow"), text: String(text))
-                items.append(item)
+//                let item = KSGuideItem(rect: CGRect.zero, arrowImage: #imageLiteral(resourceName: "arrow"), text: String(text))
+//                KSGuideItem(rect: <#T##CGRect#>, region: <#T##Region#>, arrowImage: <#T##UIImage?#>, text: <#T##String#>)
+//                items.append(item)
             } else {
                 // Use default arrow image
-                let item = KSGuideItem(sourceView: button, text: String(text))
+                let item = KSGuideItem(sourceView: button, region: .left, text: String(text))
                 
                 items.append(item)
             }
