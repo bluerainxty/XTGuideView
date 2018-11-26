@@ -137,7 +137,10 @@ public class KSGuideController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         currentIndex = 0
     }
     
